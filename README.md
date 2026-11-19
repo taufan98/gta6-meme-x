@@ -27,6 +27,9 @@ post's address:
 
     {"url": "https://x.com/<handle>/status/<id>"}
 
+Posted on X at https://x.com/sadewa0981/status/2123450918117294269 with play code
+`makefun-emerald-portrait-brook`.
+
 `main.ts` (Node 22, standard library only) copies `POST.json` from this
 repository to `/output/POST.json`. That is all the program has to do — the house
 reads the post itself from X and the judge sees the post's first picture and

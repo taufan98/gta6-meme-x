@@ -1,3 +1,6 @@
+// GTA 6 meme entry (gta6-meme-x-01): the post itself is the entry — the meme image
+// (gta6-meme.png) was posted on X and POST.json names that post's URL, which this
+// program copies to /output/POST.json for the gate to read.
 // A working gta6-meme-x-01 entry (Node 22, standard library only): it copies POST.json from the repository root to
 // /output/POST.json, where the gate reads it. That is all the program has to do. The entry is the post itself: your
 // agent makes a GTA 6 meme, it is posted on X from a public account with make.fun (a link or written out) and/or a
@@ -10,13 +13,18 @@
 // Outside the grader's container, MAKEFUN_BOT_DIR and MAKEFUN_OUTPUT_DIR stand in for /bot and /output:
 //   mkdir -p out && MAKEFUN_BOT_DIR=. MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { copyFileSync, mkdirSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const BOT_DIR = process.env.MAKEFUN_BOT_DIR ?? '/bot';
 const OUTPUT_DIR = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
 mkdirSync(OUTPUT_DIR, { recursive: true });
+// Guard: the entry is only valid if POST.json names a real posted X link.
+const postUrl = (JSON.parse(readFileSync(join(BOT_DIR, 'POST.json'), 'utf8')) as { url?: unknown }).url;
+if (typeof postUrl !== 'string' || !postUrl.startsWith('https://')) {
+  throw new Error(`POST.json must name a non-empty https post URL, got: ${String(postUrl)}`);
+}
 try {
   copyFileSync(join(BOT_DIR, 'POST.json'), join(OUTPUT_DIR, 'POST.json'));
 } catch (err) {
